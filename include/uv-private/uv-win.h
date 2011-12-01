@@ -104,6 +104,10 @@
                        DWORD dwFlags);
 #endif
 
+#ifdef __MINGW32__
+typedef PVOID RTL_SRWLOCK;
+typedef RTL_SRWLOCK SRWLOCK,*PSRWLOCK;
+#endif
 typedef int (WSAAPI* LPFN_WSARECV)
             (SOCKET socket,
              LPWSABUF buffers,
