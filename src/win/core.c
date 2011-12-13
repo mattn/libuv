@@ -192,9 +192,7 @@ static void uv_poll_ex(uv_loop_t* loop, int block) {
   }
 }
 
-
-#define UV_LOOP(loop, poll)                                                   \
-  while ((loop)->refs > 0) {                                                  \
+#define UV_LOOP_ONCE(loop, poll)                                              \
     uv_update_time((loop));                                                   \
     uv_process_timers((loop));                                                \
                                                                               \
@@ -208,7 +206,7 @@ static void uv_poll_ex(uv_loop_t* loop, int block) {
     uv_process_endgames((loop));                                              \
                                                                               \
     if ((loop)->refs <= 0) {                                                  \
-      break;                                                                  \
+      goto LOOP_BREAK;                                                        \
     }                                                                         \
                                                                               \
     uv_prepare_invoke((loop));                                                \
@@ -219,7 +217,23 @@ static void uv_poll_ex(uv_loop_t* loop, int block) {
                  (loop)->refs > 0);                                           \
                                                                               \
     uv_check_invoke((loop));                                                  \
+
+
+#define UV_LOOP(loop, poll)                                                   \
+  while ((loop)->refs > 0) {                                                  \
+    UV_LOOP_ONCE(loop, poll)                                                  \
   }
+
+
+int uv_run_once(uv_loop_t* loop) {
+  if (pGetQueuedCompletionStatusEx) {
+    UV_LOOP_ONCE(loop, uv_poll_ex);
+  } else {
+    UV_LOOP_ONCE(loop, uv_poll);
+  }
+LOOP_BREAK:
+  return 0;
+}
 
 
 int uv_run(uv_loop_t* loop) {
@@ -228,6 +242,7 @@ int uv_run(uv_loop_t* loop) {
   } else {
     UV_LOOP(loop, uv_poll);
   }
+LOOP_BREAK:
 
   assert(loop->refs == 0);
   return 0;

@@ -213,6 +213,12 @@ UV_EXTERN uv_loop_t* uv_default_loop(void);
 UV_EXTERN int uv_run (uv_loop_t*);
 
 /*
+ * This function just do once of uv_run(). If it's nothing to do events,
+ * this don't block.
+ */
+UV_EXTERN int uv_run_once (uv_loop_t*);
+
+/*
  * Manually modify the event loop's reference count. Useful if the user wants
  * to have a handle or timeout that doesn't keep the loop alive.
  */
