@@ -232,7 +232,6 @@ int uv_run_once(uv_loop_t* loop) {
   } else {
     UV_LOOP_ONCE(loop, uv_poll);
   }
-LOOP_BREAK:
   return 0;
 }
 
@@ -243,7 +242,6 @@ int uv_run(uv_loop_t* loop) {
   } else {
     UV_LOOP(loop, uv_poll);
   }
-LOOP_BREAK:
 
   assert(loop->refs == 0);
   return 0;
