@@ -23,6 +23,9 @@
 #define UV_WIN_WINAPI_H_
 
 #include <windows.h>
+#ifdef __MINGW32__
+#include <ntdef.h>
+#endif
 
 
 /*
