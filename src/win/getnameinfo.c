@@ -27,6 +27,17 @@
 #include "internal.h"
 #include "req-inl.h"
 
+#ifndef GetNameInfo
+int WSAAPI GetNameInfoW(
+  const SOCKADDR *pSockaddr,
+  socklen_t SockaddrLength,
+  PWCHAR pNodeBuffer,
+  DWORD NodeBufferSize,
+  PWCHAR pServiceBuffer,
+  DWORD ServiceBufferSize,
+  INT Flags
+);
+#endif
 
 /* getnameinfo worker thread implementation */
 static DWORD WINAPI getnameinfo_thread_proc(void* parameter) {
