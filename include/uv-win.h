@@ -31,7 +31,7 @@ typedef intptr_t ssize_t;
 
 #include <winsock2.h>
 
-#if defined(__MINGW32__) && !defined(__MINGW64__)
+#if defined(__MINGW32__) && !defined(__MINGW64_VERSION_MAJOR)
 typedef struct pollfd {
   SOCKET fd;
   short  events;
