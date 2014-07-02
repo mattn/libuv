@@ -27,18 +27,6 @@
 #include "internal.h"
 #include "req-inl.h"
 
-#ifndef GetNameInfo
-int WSAAPI GetNameInfoW(
-  const SOCKADDR *pSockaddr,
-  socklen_t SockaddrLength,
-  PWCHAR pNodeBuffer,
-  DWORD NodeBufferSize,
-  PWCHAR pServiceBuffer,
-  DWORD ServiceBufferSize,
-  INT Flags
-);
-#endif
-
 /* getnameinfo worker thread implementation */
 static DWORD WINAPI getnameinfo_thread_proc(void* parameter) {
   uv_getnameinfo_t* req = (uv_getnameinfo_t*)parameter;
@@ -49,6 +37,7 @@ static DWORD WINAPI getnameinfo_thread_proc(void* parameter) {
 
   assert(req != NULL);
 
+#ifdef GetNameInfo
   ret = GetNameInfoW((struct sockaddr*)&req->storage,
                      sizeof(req->storage),
                      host,
@@ -56,6 +45,32 @@ static DWORD WINAPI getnameinfo_thread_proc(void* parameter) {
                      service,
                      sizeof(service),
                      req->flags);
+#else
+  {
+    char _host[NI_MAXHOST];
+    char _service[NI_MAXSERV];
+    ret = getnameinfo((struct sockaddr*)&req->storage,
+                       sizeof(req->storage),
+                       _host,
+                       sizeof(_host),
+                       _service,
+                       sizeof(_service),
+                       req->flags);
+    /* convert multi-bytes to wide chars */
+    MultiByteToWideChar(CP_THREAD_ACP,
+                       0,
+                       _host,
+                       sizeof(_host),
+                       host,
+                       sizeof(host));
+    MultiByteToWideChar(CP_THREAD_ACP,
+                       0,
+                       _service,
+                       sizeof(_service),
+                       service,
+                       sizeof(service));
+  }
+#endif
   req->retcode = uv__getaddrinfo_translate_error(ret);
 
   /* convert results to UTF-8 */
