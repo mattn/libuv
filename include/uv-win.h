@@ -472,7 +472,6 @@ RB_HEAD(uv_timer_tree_s, uv_timer_s);
   uv_write_t* non_overlapped_writes_tail;                                     \
   uv_mutex_t readfile_mutex;                                                  \
   volatile HANDLE readfile_thread;                                            \
-  void* reserved;
 
 #define UV_PIPE_PRIVATE_FIELDS                                                \
   HANDLE handle;                                                              \
