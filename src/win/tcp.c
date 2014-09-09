@@ -880,7 +880,7 @@ int uv_tcp_try_write(uv_tcp_t* handle,
                      const uv_buf_t bufs[],
                      unsigned int nbufs) {
   DWORD bytes = 0;
-  if (WSASend(((uv_tcp_t*)stream)->socket,
+  if (WSASend(((uv_tcp_t*) handle)->socket,
                (WSABUF*) bufs,
                nbufs,
                &bytes,
