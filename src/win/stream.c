@@ -189,8 +189,9 @@ int uv_try_write(uv_stream_t* stream,
       return uv_tcp_try_write((uv_tcp_t*) stream, bufs, nbufs);
       break;
     default:
-      assert(0);
+      break;
   }
+  return UV_ENOSYS;
 }
 
 
