@@ -876,6 +876,22 @@ int uv_tcp_write(uv_loop_t* loop,
 }
 
 
+int uv_tcp_try_write(uv_tcp_t* handle,
+                     const uv_buf_t bufs[],
+                     unsigned int nbufs) {
+  DWORD bytes = 0;
+  if (WSASend(((uv_tcp_t*)stream)->socket,
+               (WSABUF*) bufs,
+               nbufs,
+               &bytes,
+               0,
+               NULL,
+               NULL) == 0)
+    return (int) bytes;
+  return uv_translate_sys_error(WSAGetLastError());
+}
+
+
 void uv_process_tcp_read_req(uv_loop_t* loop, uv_tcp_t* handle,
     uv_req_t* req) {
   DWORD bytes, flags, err;

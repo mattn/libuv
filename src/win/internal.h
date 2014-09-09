@@ -155,6 +155,7 @@ int uv_tcp_import(uv_tcp_t* tcp, uv__ipc_socket_info_ex* socket_info_ex,
 int uv_tcp_duplicate_socket(uv_tcp_t* handle, int pid,
     LPWSAPROTOCOL_INFOW protocol_info);
 
+int uv_tcp_try_write(uv_tcp_t* handle, const uv_buf_t bufs[], unsigned int nbufs);
 
 /*
  * UDP

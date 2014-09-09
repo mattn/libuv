@@ -184,8 +184,13 @@ int uv_write2(uv_write_t* req,
 int uv_try_write(uv_stream_t* stream,
                  const uv_buf_t bufs[],
                  unsigned int nbufs) {
-  /* NOTE: Won't work with overlapped writes */
-  return UV_ENOSYS;
+  switch (stream->type) {
+    case UV_TCP:
+      return uv_tcp_try_write((uv_tcp_t*) stream, bufs, nbufs);
+      break;
+    default:
+      assert(0);
+  }
 }
 
 
