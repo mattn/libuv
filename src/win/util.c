@@ -1036,9 +1036,12 @@ int uv_interface_addresses(uv_interface_address_t** addresses_ptr,
       sa = unicast_address->Address.lpSockaddr;
 
       /* XP has no OnLinkPrefixLength field. */
+#ifndef __MINGW32__
       if (is_vista_or_greater) {
         prefix_len = unicast_address->OnLinkPrefixLength;
-      } else {
+      } else
+#endif
+      {
         /* Prior to Windows Vista the FirstPrefix pointed to the list with
          * single prefix for each IP address assigned to the adapter.
          * Order of FirstPrefix does not match order of FirstUnicastAddress,
